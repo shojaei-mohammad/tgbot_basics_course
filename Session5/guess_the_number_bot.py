@@ -4,17 +4,11 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
-BOT_TOKEN = "7172049198:AAHrWtw8XR_dUSn8LgXmX5fBQC-M8rJa_5E"
+BOT_TOKEN = "7172049198"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-user_info: dict = {
-    "in_game": False,
-    "secret_numer": None,
-    "attempts": None,
-    "total_games": 0,
-    "win_games": 0,
-}
+user_info: dict = {}
 
 ATTEMPTS = 5
 
@@ -32,6 +26,15 @@ async def process_start(message: Message) -> None:
         "برای شروع بازی با ارسال یکی از پیام‌های زیر بازی شروع خواهد شد.\n\n"
         "بازی ، بازی کنیم، بزن بریم"
     )
+    if message.from_user.id not in user_info:
+        user_info[message.from_user.id] = {
+            "in_game": False,
+            "secret_numer": None,
+            "attempts": None,
+            "total_games": 0,
+            "win_games": 0,
+        }
+        print(user_info)
 
 
 @dp.message(Command(commands=["help"]))
@@ -48,16 +51,19 @@ async def process_help(message: Message) -> None:
 
 @dp.message(Command(commands=["stat"]))
 async def process_game(message: Message) -> None:
+    chat_id = message.from_user.id
     await message.answer(
-        f"تعداد کل بازی‌های: {user_info['total_games']}\n"
-        f"تعداد بازی‌های برنده: {user_info['win_games']}\n"
+        f"تعداد کل بازی‌های: {user_info[chat_id]['total_games']}\n"
+        f"تعداد بازی‌های برنده: {user_info[chat_id]['win_games']}\n"
     )
 
 
 @dp.message(Command(commands=["cancle"]))
 async def process_cancle(message: Message) -> None:
-    if user_info["in_game"]:
-        user_info["in_game"] = False
+    chat_id = message.from_user.id
+
+    if user_info[chat_id]["in_game"]:
+        user_info[chat_id]["in_game"] = False
         await message.answer("بازی متوقف شد")
     else:
         await message.answer("در حال حاضر بازی  نمیکنید")
@@ -65,10 +71,11 @@ async def process_cancle(message: Message) -> None:
 
 @dp.message(F.text.in_(["بازی", "بازی میکنم", "بزن بریم"]))
 async def process_possitive_answer(message: Message) -> None:
-    if not user_info["in_game"]:
-        user_info["in_game"] = True
-        user_info["secret_numer"] = get_random_numer()
-        user_info["attempts"] = ATTEMPTS
+    chat_id = message.from_user.id
+    if not user_info[chat_id]["in_game"]:
+        user_info[chat_id]["in_game"] = True
+        user_info[chat_id]["secret_numer"] = get_random_numer()
+        user_info[chat_id]["attempts"] = ATTEMPTS
 
         await message.answer("من یک عدد بین صفر تا صدد در نظر گرفتم سعی کد حدس بزنیش")
 
@@ -81,7 +88,8 @@ async def process_possitive_answer(message: Message) -> None:
 
 @dp.message(F.text.in_(["باشه بعدا", "بازی نمیکنم", "نه"]))
 async def process_negative_answer(message: Message) -> None:
-    if not user_info["in_game"]:
+    chat_id = message.from_user.id
+    if not user_info[chat_id]["in_game"]:
         await message.answer(
             "هروقت دوست داشتی بازی کنی فقط کافیه کلمه  بازی رو برای من ارسال کنی"
         )
@@ -93,30 +101,31 @@ async def process_negative_answer(message: Message) -> None:
 
 @dp.message(lambda x: x.text and x.text.isdigit() and 1 < int(x.text) < 100)
 async def process_answer(message: Message) -> None:
+    chat_id = message.from_user.id
     gussed_number = int(message.text)
-    if user_info["in_game"]:
-        if gussed_number == user_info["secret_numer"]:
-            user_info["total_games"] += 1
-            user_info["win_games"] += 1
+    if user_info[chat_id]["in_game"]:
+        if gussed_number == user_info[chat_id]["secret_numer"]:
+            user_info[chat_id]["total_games"] += 1
+            user_info[chat_id]["win_games"] += 1
             await message.answer(
-                f"عدد مخفی: {user_info['secret_numer']}\n"
+                f"عدد مخفی: {user_info[chat_id]['secret_numer']}\n"
                 f"عدد شما: {gussed_number}\n\n"
                 f"عدد شما درست بود\n"
                 f"بازی متوقف شد"
             )
-            user_info["in_game"] = False
-        elif gussed_number > user_info["secret_numer"]:
+            user_info[chat_id]["in_game"] = False
+        elif gussed_number > user_info[chat_id]["secret_numer"]:
             await message.answer("عدد مخفی کوچکتر است")
-            user_info["attempts"] -= 1
-        elif gussed_number < user_info["secret_numer"]:
+            user_info[chat_id]["attempts"] -= 1
+        elif gussed_number < user_info[chat_id]["secret_numer"]:
             await message.answer("عدد مخفی بزرگتر است")
-            user_info["attempts"] -= 1
+            user_info[chat_id]["attempts"] -= 1
 
-        if user_info["attempts"] == 0:
-            user_info["total_games"] += 1
-            user_info["in_game"] = False
+        if user_info[chat_id]["attempts"] == 0:
+            user_info[chat_id]["total_games"] += 1
+            user_info[chat_id]["in_game"] = False
             await message.answer(
-                f"شما باختید \n\n عدد مخفی: {user_info['secret_numer']}"
+                f"شما باختید \n\n عدد مخفی: {user_info[chat_id]['secret_numer']}"
             )
 
     else:
@@ -125,7 +134,8 @@ async def process_answer(message: Message) -> None:
 
 @dp.message()
 async def process_other_entry(message: Message) -> None:
-    if user_info["in_game"]:
+    chat_id = message.from_user.id
+    if user_info[chat_id]["in_game"]:
         await message.answer(
             "شما در حال بازی هستید و فقط میتوانید عدد ارسال کنید \n\n"
             "با استفاده از دستور /cancle میتوانید بازی را لغو کنید."
