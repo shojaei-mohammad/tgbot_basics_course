@@ -20,4 +20,4 @@ def laod_config(path: str | None = None):
     else:
         env.read_env()
 
-    return Config(tg_bot=TgBot(token="TOKEN"))
+    return Config(tg_bot=TgBot(token=env.str("TOKEN")))
