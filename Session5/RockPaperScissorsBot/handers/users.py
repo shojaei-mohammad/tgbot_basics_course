@@ -2,8 +2,8 @@ from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from Session5.rock_paper_scissors_bot.keyboards.keyboards import yes_no_markup, game_kb
-from Session5.rock_paper_scissors_bot.services.utils import bot_choice, get_winner
+from Session5.RockPaperScissorsBot.keyboards.keyboards import yes_no_markup, game_kb
+from Session5.RockPaperScissorsBot.services.utils import bot_choice, get_winner
 
 users_router = Router()
 

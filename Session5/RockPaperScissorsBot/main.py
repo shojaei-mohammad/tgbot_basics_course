@@ -2,10 +2,10 @@ import asyncio
 
 from aiogram import Bot, Dispatcher
 
-from Session5.rock_paper_scissors_bot.config import load_config
-from Session5.rock_paper_scissors_bot.handers.other_handlers import other_router
-from Session5.rock_paper_scissors_bot.handers.users import users_router
-from Session5.rock_paper_scissors_bot.services.bot_commands import set_commands
+from Session5.RockPaperScissorsBot.config import load_config
+from Session5.RockPaperScissorsBot.handers.other_handlers import other_router
+from Session5.RockPaperScissorsBot.handers.users import users_router
+from Session5.RockPaperScissorsBot.services.bot_commands import set_commands
 
 
 async def main() -> None:
