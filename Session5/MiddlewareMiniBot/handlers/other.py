@@ -4,7 +4,7 @@ from aiogram import Router
 from aiogram.types import Message
 
 
-from Session5.MiddlewareMiniBot.filters.filters import MyTrueFilter
+from Session5.MiddlewareMiniBot.filters.filters import MyTrueFilter, MyFalseFilter
 
 logger = logging.getLogger(__name__)
 
