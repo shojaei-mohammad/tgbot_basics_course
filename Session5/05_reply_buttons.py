@@ -10,7 +10,7 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-TOKEN = "7172049198:AAHrWtw8XR_dUSn8LgXmX5fBQC-M8rJa_5E"
+TOKEN = "YOUR_TOKEN"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()

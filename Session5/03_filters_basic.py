@@ -3,7 +3,7 @@
 #
 # from aiogram.types import Message, ChatMemberUpdated
 #
-# BOT_TOKEN = "7172049198:AAHrWtw8XR_dUSn8LgXmX5fBQC-M8rJa_5E"
+# BOT_TOKEN = "YOUR_TOKEN"
 #
 # bot = Bot(token=BOT_TOKEN)
 # dp = Dispatcher()
@@ -52,7 +52,7 @@ from aiogram.filters import Command, BaseFilter
 
 from aiogram.types import Message
 
-BOT_TOKEN = "7172049198:"
+BOT_TOKEN = "YOUR_TOKEN"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
